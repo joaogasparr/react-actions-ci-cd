@@ -27,16 +27,16 @@ jobs:
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v3
       - if: endsWith(github.REF, '/master') != true
-        name: 'Run an analysis of the ${{ github.REF }} branch'
+        name: 'Run an analysis of the ${{ github.REF_NAME }} branch'
         run: sonar-scanner
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.host.url=${{ secrets.SONAR_URL }}
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./src
           -Dsonar.projectBaseDir=.
-          -Dsonar.branch.name=${GITHUB_REF:11}
+          -Dsonar.branch.name=${GITHUB_REF_NAME:11}
           -Dsonar.exclusions=node_modules/*******
           -Dsonar.scm.provider=git
         env:
