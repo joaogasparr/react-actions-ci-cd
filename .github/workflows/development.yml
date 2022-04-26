@@ -37,7 +37,7 @@ jobs:
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./src
           -Dsonar.projectBaseDir=.
-          -Dsonar.branch.name=${{ github.REF##*/ }}
+          -Dsonar.branch.name=${ GITHUB_REF##*/ }
           -Dsonar.exclusions=node_modules/*******
           -Dsonar.scm.provider=git
         env:
