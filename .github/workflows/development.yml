@@ -12,7 +12,6 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.HEAD_REF }}
           fetch-depth: 0
       - name: Use Node.js 14.x
         uses: actions/setup-node@v3
