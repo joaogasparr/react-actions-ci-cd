@@ -60,8 +60,8 @@ jobs:
         uses: nwtgck/actions-netlify@v1.2
         with:
           publish-dir: './'
-          production-branch: main
-          production-deploy: false
+          production-branch: develop
+          production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: ${{ github.event.pull_request.title }}
         env:
