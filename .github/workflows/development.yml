@@ -46,7 +46,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: 'artifact-${{ github.SHA }}'
-          path: build
+          path: |
+            build
+            .git
 
   deploy:
     runs-on: ubuntu-18.04
