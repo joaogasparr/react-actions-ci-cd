@@ -42,7 +42,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-18.04
-    needs: build
+    needs: ci
     steps:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.2
