@@ -49,6 +49,7 @@ jobs:
           path: |
             build
             .git
+            package.json
 
   deploy:
     runs-on: ubuntu-18.04
