@@ -5,44 +5,8 @@ on:
     types: [opened, edited, synchronize, reopened]
 
 jobs:
-  # ci:
-  #   runs-on: ubuntu-18.04
-  #   steps:
-  #     - name: Code Checkout
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ github.HEAD_REF }}
-  #         fetch-depth: 0
-  #     - name: Use Node.js 14.x
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 14.x
-  #     - name: Installing Dependencies
-  #       run: npm install
-  #     - name: Running Unit Tests
-  #       run: npm run test --coverage --watchAll=false
-  #     - name: Running Lint
-  #       run: npm run lint
-  #     - name: Setup SonarQube
-  #       uses: warchant/setup-sonar-scanner@v3
-  #     - name: SonarQube Scan
-  #       run: sonar-scanner
-  #         -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-  #         -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
-  #         -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-  #         -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-  #         -Dsonar.sourceEncoding=UTF-8
-  #         -Dsonar.sources=./src
-  #         -Dsonar.projectBaseDir=.
-  #         -Dsonar.branch.name=${{ github.HEAD_REF }}
-  #         -Dsonar.exclusions=node_modules/*******
-  #         -Dsonar.scm.provider=git
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
-
-  deploy:
+  build:
     runs-on: ubuntu-18.04
-    # needs: ci
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3
@@ -55,14 +19,47 @@ jobs:
           node-version: 14.x
       - name: Installing Dependencies
         run: npm install
-      - name: Generating Build
+      - name: Running Unit Tests
+        run: npm run test --coverage --watchAll=false
+      - name: Running Lint
+        run: npm run lint
+      - name: Generate build
         run: npm run build
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v3
+      - name: SonarQube Scan
+        run: sonar-scanner
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=./src
+          -Dsonar.projectBaseDir=.
+          -Dsonar.branch.name=${{ github.HEAD_REF }}
+          -Dsonar.exclusions=node_modules/*******
+          -Dsonar.scm.provider=git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'
+          path: build
+
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - name: Get the last artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}  
-          vercel-args: '--prod'
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} 
-          working-directory: ./       
+          working-directory: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'      
