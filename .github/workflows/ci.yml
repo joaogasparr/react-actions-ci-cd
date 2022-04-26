@@ -40,19 +40,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
 
-  # deploy:
-  #   runs-on: ubuntu-18.04
-  #   needs: build
-  #   steps:
-  #     - name: Deploy to Netlify
-  #       uses: nwtgck/actions-netlify@v1.2
-  #       with:
-  #         publish-dir: './dist'
-  #         production-branch: main
-  #         production-deploy: false
-  #         github-token: ${{ secrets.GITHUB_TOKEN }}
-  #         deploy-message: ${{ github.event.pull_request.title }}
-  #       env:
-  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  #         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-  #       timeout-minutes: 1        
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: 'build/'
+          production-branch: main
+          production-deploy: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: ${{ github.event.pull_request.title }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1        
