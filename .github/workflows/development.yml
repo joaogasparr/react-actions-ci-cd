@@ -32,7 +32,7 @@ jobs:
     needs: build
     steps:
       - name: Getting last artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build
       - name: Deploy to Netlify
