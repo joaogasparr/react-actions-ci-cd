@@ -21,8 +21,6 @@ jobs:
         run: npm install
       - name: Running Unit Tests
         run: npm run test --coverage --watchAll=false
-      # - name: Generate build
-      #   run: npm run build --if-present
       - name: Running Lint
         run: npm run lint
       - name: Setup SonarQube
@@ -36,6 +34,7 @@ jobs:
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./src
           -Dsonar.projectBaseDir=.
+          -Dsonar.branch.name=${{ github.HEAD_REF }}
           -Dsonar.exclusions=node_modules/*******
           -Dsonar.scm.provider=git
         env:
