@@ -20,7 +20,7 @@ jobs:
       - name: Installing Dependencies
         run: npm install
       - name: Running Unit Tests
-        run: npm run test --coverage --watchAll=false
+        run: npm run test --coverage
       - name: Running Lint
         run: npm run lint
       - name: Generate build
