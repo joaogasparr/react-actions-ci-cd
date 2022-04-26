@@ -16,7 +16,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React Netlify Actions
+          Learn React Netlify Actions!
         </a>
       </header>
     </div>
