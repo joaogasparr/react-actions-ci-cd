@@ -28,6 +28,9 @@ jobs:
         with:
           projectBaseDir: src
           args: >
+            -Dsonar.projectKey=react-actions-ci-cd
+            -Dsonar.projectName=react-actions-ci-cd
+            -Dsonar.sources=src
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.test.tsx
