@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-18.04
     steps:
       - name: Code Checkout
@@ -26,8 +26,7 @@ jobs:
         run: npm run lint
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v3
-      - if: endsWith(github.REF, '/master') != true
-        name: 'Run an analysis of the ${{ github.REF_NAME }} branch'
+      - name: SonarQube Scan
         run: sonar-scanner
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
           -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
@@ -36,25 +35,11 @@ jobs:
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./src
           -Dsonar.projectBaseDir=.
-          -Dsonar.branch.name=${GITHUB_REF_NAME:11}
+          -Dsonar.branch.name=${github.HEAD_REF}
           -Dsonar.exclusions=node_modules/*******
           -Dsonar.scm.provider=git
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - if: endsWith(github.REF, '/master') == true   
-        name: SonarQube Scan
-        run: sonar-scanner
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          -Dsonar.sourceEncoding=UTF-8
-          -Dsonar.sources=./src
-          -Dsonar.projectBaseDir=.
-          -Dsonar.exclusions=node_modules/*******
-          -Dsonar.scm.provider=git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}       
 
   # deploy:
   #   runs-on: ubuntu-18.04
