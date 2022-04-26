@@ -1,0 +1,74 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Installing Dependencies
+        run: npm install
+      - name: Running Unit Tests
+        run: npm run test --coverage --watchAll=false
+      # - name: Generate build
+      #   run: npm run build --if-present
+      - name: Running Lint
+        run: npm run lint
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v3
+      - if: endsWith(github.REF, '/master') != true
+        name: 'Run an analysis of the ${{ github.REF }} branch'
+        run: sonar-scanner
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.host.url=${{ secrets.SONAR_URL }}
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=./src
+          -Dsonar.projectBaseDir=.
+          -Dsonar.branch.name=${GITHUB_REF:11}
+          -Dsonar.exclusions=node_modules/*******
+          -Dsonar.scm.provider=git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: endsWith(github.REF, '/master') == true   
+        name: SonarQube Scan
+        run: sonar-scanner
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=./src
+          -Dsonar.projectBaseDir=.
+          -Dsonar.exclusions=node_modules/*******
+          -Dsonar.scm.provider=git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}         
+
+  # deploy:
+  #   runs-on: ubuntu-18.04
+  #   needs: build
+  #   steps:
+  #     - name: Deploy to Netlify
+  #       uses: nwtgck/actions-netlify@v1.2
+  #       with:
+  #         publish-dir: './dist'
+  #         production-branch: main
+  #         production-deploy: false
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         deploy-message: ${{ github.event.pull_request.title }}
+  #       env:
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+  #       timeout-minutes: 1        
