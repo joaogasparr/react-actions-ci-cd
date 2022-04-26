@@ -1,0 +1,40 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  ci:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+      - name: Installing Dependencies
+        run: npm install
+      - name: Running Unit Tests
+        run: npm run test --coverage --watchAll=false
+      - name: Running Lint
+        run: npm run lint
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v3
+      - name: SonarQube Scan
+        run: sonar-scanner
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=./src
+          -Dsonar.projectBaseDir=.
+          -Dsonar.branch.name=${{ github.HEAD_REF }}
+          -Dsonar.exclusions=node_modules/*******
+          -Dsonar.scm.provider=git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
