@@ -47,7 +47,6 @@ jobs:
         with:
           name: 'artifact-${{ github.SHA }}'
           path: |
-            !node_modules
             !src
 
   deploy:
