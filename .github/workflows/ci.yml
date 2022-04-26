@@ -13,6 +13,9 @@ jobs:
         with:
           ref: ${{ github.HEAD_REF }}
           fetch-depth: 0
+          run: |
+            npm install
+            npx netlify link --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --id ${{ secrets.NETLIFY_SITE_ID }}
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -44,15 +47,12 @@ jobs:
     runs-on: ubuntu-18.04
     needs: ci
     steps:
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v1.2
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
         with:
-          publish-dir: 'build/'
-          production-branch: main
-          production-deploy: false
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: ${{ github.event.pull_request.title }}
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        timeout-minutes: 1        
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}  
+          vercel-args: '--prod '
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} 
+          working-directory: ./build       
