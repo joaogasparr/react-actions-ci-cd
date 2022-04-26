@@ -44,7 +44,7 @@ jobs:
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
-          name: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'
+          name: 'artifact-${{ github.SHA }}'
           path: build
 
   deploy:
@@ -54,7 +54,7 @@ jobs:
       - name: Get the last artifact
         uses: actions/download-artifact@v3
         with:
-          name: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'
+          name: 'artifact-${{ github.SHA }}'
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
@@ -62,4 +62,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}  
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} 
-          working-directory: 'artifact-${{ github.SHA }}-${{ github.HEAD_REF }}'      
+          working-directory: 'artifact-${{ github.SHA }}'    
