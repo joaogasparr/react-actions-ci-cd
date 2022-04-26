@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   ci:
@@ -11,6 +11,7 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v3
         with:
+          ref: ${{ github.HEAD_REF }}
           fetch-depth: 0
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
@@ -35,7 +36,7 @@ jobs:
           -Dsonar.sourceEncoding=UTF-8
           -Dsonar.sources=./src
           -Dsonar.projectBaseDir=.
-          -Dsonar.branch.name=${github.HEAD_REF}
+          -Dsonar.branch.name=${{ github.HEAD_REF }}
           -Dsonar.exclusions=node_modules/*******
           -Dsonar.scm.provider=git
         env:
