@@ -19,9 +19,10 @@ jobs:
       - name: Installing Dependencies
         run: npm install
       - name: Running Unit Tests
-        run: npm run test --coverage --watchAll=false
+        run: npm run test:cov
       - name: Running Lint
         run: npm run lint
+      - name: SonarQube Scan
       - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -32,12 +33,15 @@ jobs:
             -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.sources=src
-            -Dsonar.exclusions=**/node_modules/**,**/*.test.ts,**/*.test.tsx
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,**/*.spec.tsx
             -Dsonar.tests=src
-            -Dsonar.test.inclusions=**/*.test.tsx,**/*.test.ts
+            -Dsonar.test.inclusions=**/*.spec.tsx,**/*.spec.ts
             -Dsonar.typescript.exclusions=**/node_modules/**
             -Dsonar.typescript.coveragePlugin=lcov
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.scm.provider=git
+            -Dsonar.branch.name=${{ github.HEAD_REF }}
+      - name: SonarQube Quality Gate
       - uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         env:
