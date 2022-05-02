@@ -16,12 +16,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14.x
-      - name: Installing Dependencies
-        run: npm install
-      - name: Running Unit Tests
-        run: npm run test:cov
-      - name: Running Lint
-        run: npm run lint
+      - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -41,8 +36,3 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: SonarQube Quality Gate
-      - uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
