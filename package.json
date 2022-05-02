@@ -20,7 +20,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
-    "lint": "eslint src/",
+    "test:cov": "react-scripts test --watchAll=false --coverage",
+    "lint": "eslint src",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
