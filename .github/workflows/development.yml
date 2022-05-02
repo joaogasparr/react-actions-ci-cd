@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Sync CI
-        uses: joaogasparr/react-actions-ci-cd/.github/workflows/ci.yml
+        uses: joaogasparr/react-actions-ci-cd/.github/workflows/ci.yml@develop
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
@@ -33,6 +33,7 @@ jobs:
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Deploy from GitHub Actions"
+          fails-without-credentials: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
