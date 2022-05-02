@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Sync CI
-        uses: joaogasparr/react-actions-ci-cd/.github/workflows/ci.yml
+        uses: joaogasparr/react-actions-ci-cd/.github/workflows/ci.yml@develop
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
-          name: 'artifact-${{ github.SHA }}'
+          name: "artifact-${{ github.SHA }}"
           path: build
 
   deploy:
@@ -24,11 +24,11 @@ jobs:
       - name: Get the last artifact
         uses: actions/download-artifact@v3
         with:
-          name: 'artifact-${{ github.SHA }}'
+          name: "artifact-${{ github.SHA }}"
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v1.2
         with:
-          publish-dir: './'
+          publish-dir: "./"
           production-branch: develop
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
