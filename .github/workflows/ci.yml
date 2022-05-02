@@ -25,6 +25,7 @@ jobs:
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         with:
+          projectBaseDir: .
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
