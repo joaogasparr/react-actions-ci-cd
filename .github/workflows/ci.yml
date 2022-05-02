@@ -20,11 +20,10 @@ jobs:
         run: npm install
       - name: Running Unit Tests
         run: npm run test:cov
+      - name: Running Lint
+        run: npm run lint
       - name: SonarQube Scan
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        uses: sonarsource/sonarqube-scan-action@master
         with:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
@@ -39,6 +38,9 @@ jobs:
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.scm.provider=git
             -Dsonar.branch.name=${{ github.HEAD_REF }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       - name: SonarQube Quality Gate
       - uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
