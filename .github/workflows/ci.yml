@@ -22,19 +22,11 @@ jobs:
         run: npm run test --coverage --watchAll=false
       - name: Running Lint
         run: npm run lint
-      - name: Setup SonarQube
-        uses: warchant/setup-sonar-scanner@v3
-      - name: SonarQube Scan
-        run: sonar-scanner
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.projectName=${{ secrets.SONAR_PROJECT_KEY }}
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          -Dsonar.sourceEncoding=UTF-8
-          -Dsonar.sources=./src
-          -Dsonar.projectBaseDir=.
-          -Dsonar.branch.name=${{ github.HEAD_REF }}
-          -Dsonar.exclusions=node_modules/*******
-          -Dsonar.scm.provider=git
+      - uses: sonarsource/sonarqube-scan-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
